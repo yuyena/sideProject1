@@ -20,9 +20,9 @@ public class UserRegisterDto {
     private String username;
 
     @NotBlank(message = "비밀번호는 필수입니다.")
-    @Size(min = 8, max = 20, message = "비밀번호는 8~20자여야 합니다.")
-    @Pattern(regexp = "^(?=.*[A-Za-z])(?=.*\\d)(?=.*[@$!%*#?&])[A-Za-z\\d@$!%*#?&]+$",
-            message = "비밀번호는 영문, 숫자, 특수문자를 포함해야 합니다.")
+    @Size(min = 4, max = 10, message = "비밀번호는 4~10자여야 합니다.")
+    @Pattern(regexp = "^(?=.*[A-Za-z])(?=.*\\d)[A-Za-z\\d]+$",
+            message = "비밀번호는 영문, 숫자를 포함해야 합니다.")
     private String password;
 
     @NotBlank(message = "비밀번호 확인은 필수입니다.")

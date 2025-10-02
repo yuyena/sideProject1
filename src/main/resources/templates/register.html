@@ -164,7 +164,7 @@
         <!-- 비밀번호 -->
         <div class="form-group">
             <label for="password">비밀번호 <span class="required">*</span></label>
-            <input type="password" id="password" th:field="*{password}" placeholder="영문, 숫자, 특수문자 포함 8~20자" required>
+            <input type="password" id="password" th:field="*{password}" placeholder="영문, 숫자 포함 4~10자" required>
             <div class="error-message" id="passwordError"></div>
         </div>
 
@@ -274,10 +274,10 @@
     document.getElementById('password').addEventListener('input', function() {
         const password = this.value;
         const errorDiv = document.getElementById('passwordError');
-        const regex = /^(?=.*[A-Za-z])(?=.*\d)(?=.*[@$!%*#?&])[A-Za-z\d@$!%*#?&]{8,20}$/;
+        const regex = /^(?=.*[A-Za-z])(?=.*\d)[A-Za-z\d]{4,10}$/;
 
         if (password && !regex.test(password)) {
-            showError(errorDiv, '영문, 숫자, 특수문자를 포함한 8~20자여야 합니다.');
+            showError(errorDiv, '영문, 숫자 포함 4-10자여야 합니다.');
         } else {
             hideError(errorDiv);
         }
