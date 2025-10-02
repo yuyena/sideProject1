@@ -1,0 +1,318 @@
+<!DOCTYPE html>
+<html lang="ko" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>회원가입 - Messenger</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100vh;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            padding: 20px;
+        }
+
+        .register-container {
+            background: white;
+            padding: 40px;
+            border-radius: 20px;
+            box-shadow: 0 20px 60px rgba(0, 0, 0, 0.3);
+            width: 100%;
+            max-width: 450px;
+        }
+
+        h1 {
+            text-align: center;
+            color: #333;
+            margin-bottom: 30px;
+            font-size: 28px;
+        }
+
+        .form-group {
+            margin-bottom: 20px;
+        }
+
+        label {
+            display: block;
+            margin-bottom: 8px;
+            color: #555;
+            font-weight: 600;
+            font-size: 14px;
+        }
+
+        .required {
+            color: #e74c3c;
+        }
+
+        input[type="text"],
+        input[type="password"],
+        textarea {
+            width: 100%;
+            padding: 12px 15px;
+            border: 2px solid #e0e0e0;
+            border-radius: 8px;
+            font-size: 14px;
+            transition: all 0.3s;
+        }
+
+        input:focus,
+        textarea:focus {
+            outline: none;
+            border-color: #667eea;
+        }
+
+        textarea {
+            resize: vertical;
+            min-height: 60px;
+            font-family: inherit;
+        }
+
+        .check-button {
+            padding: 8px 15px;
+            background-color: #f0f0f0;
+            border: 1px solid #ddd;
+            border-radius: 6px;
+            cursor: pointer;
+            font-size: 13px;
+            margin-top: 8px;
+            transition: all 0.3s;
+        }
+
+        .check-button:hover {
+            background-color: #e0e0e0;
+        }
+
+        .error-message {
+            color: #e74c3c;
+            font-size: 12px;
+            margin-top: 5px;
+            display: none;
+        }
+
+        .success-message {
+            color: #27ae60;
+            font-size: 12px;
+            margin-top: 5px;
+            display: none;
+        }
+
+        .submit-button {
+            width: 100%;
+            padding: 15px;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            border: none;
+            border-radius: 8px;
+            font-size: 16px;
+            font-weight: 600;
+            cursor: pointer;
+            margin-top: 20px;
+            transition: transform 0.2s;
+        }
+
+        .submit-button:hover {
+            transform: translateY(-2px);
+        }
+
+        .submit-button:disabled {
+            opacity: 0.6;
+            cursor: not-allowed;
+            transform: none;
+        }
+
+        .login-link {
+            text-align: center;
+            margin-top: 20px;
+            color: #666;
+            font-size: 14px;
+        }
+
+        .login-link a {
+            color: #667eea;
+            text-decoration: none;
+            font-weight: 600;
+        }
+
+        .login-link a:hover {
+            text-decoration: underline;
+        }
+    </style>
+</head>
+<body>
+<div class="register-container">
+    <h1>🚀 회원가입</h1>
+
+    <form th:action="@{/users/register}" th:object="${userRegisterDto}" method="post" id="registerForm">
+        <!-- 아이디 -->
+        <div class="form-group">
+            <label for="username">아이디 <span class="required">*</span></label>
+            <input type="text" id="username" th:field="*{username}" placeholder="영문, 숫자 4~20자" required>
+            <button type="button" class="check-button" onclick="checkUsername()">중복 확인</button>
+            <div class="error-message" id="usernameError"></div>
+            <div class="success-message" id="usernameSuccess"></div>
+        </div>
+
+        <!-- 비밀번호 -->
+        <div class="form-group">
+            <label for="password">비밀번호 <span class="required">*</span></label>
+            <input type="password" id="password" th:field="*{password}" placeholder="영문, 숫자, 특수문자 포함 8~20자" required>
+            <div class="error-message" id="passwordError"></div>
+        </div>
+
+        <!-- 비밀번호 확인 -->
+        <div class="form-group">
+            <label for="passwordConfirm">비밀번호 확인 <span class="required">*</span></label>
+            <input type="password" id="passwordConfirm" th:field="*{passwordConfirm}" placeholder="비밀번호를 다시 입력하세요" required>
+            <div class="error-message" id="passwordConfirmError"></div>
+        </div>
+
+        <!-- 닉네임 -->
+        <div class="form-group">
+            <label for="nickname">닉네임 <span class="required">*</span></label>
+            <input type="text" id="nickname" th:field="*{nickname}" placeholder="2~10자" required>
+            <button type="button" class="check-button" onclick="checkNickname()">중복 확인</button>
+            <div class="error-message" id="nicknameError"></div>
+            <div class="success-message" id="nicknameSuccess"></div>
+        </div>
+
+        <!-- 상태 메시지 -->
+        <div class="form-group">
+            <label for="statusMsg">상태 메시지</label>
+            <textarea id="statusMsg" th:field="*{statusMsg}" placeholder="자신을 표현하는 한마디 (선택사항)"></textarea>
+        </div>
+
+        <button type="submit" class="submit-button" id="submitButton">회원가입</button>
+    </form>
+
+    <div class="login-link">
+        이미 계정이 있으신가요? <a th:href="@{/users/login}">로그인</a>
+    </div>
+</div>
+
+<script>
+    let usernameChecked = false;
+    let nicknameChecked = false;
+
+    // 아이디 중복 확인
+    function checkUsername() {
+        const username = document.getElementById('username').value.trim();
+        const errorDiv = document.getElementById('usernameError');
+        const successDiv = document.getElementById('usernameSuccess');
+
+        if (!username) {
+            showError(errorDiv, '아이디를 입력하세요.');
+            hideSuccess(successDiv);
+            return;
+        }
+
+        fetch(`/users/check-username?username=${username}`)
+            .then(response => response.text())
+            .then(isDuplicate => {
+                if (isDuplicate === 'true') {
+                    showError(errorDiv, '이미 사용 중인 아이디입니다.');
+                    hideSuccess(successDiv);
+                    usernameChecked = false;
+                } else {
+                    showSuccess(successDiv, '사용 가능한 아이디입니다.');
+                    hideError(errorDiv);
+                    usernameChecked = true;
+                }
+            })
+            .catch(() => showError(errorDiv, '중복 확인 중 오류가 발생했습니다.'));
+    }
+
+    // 닉네임 중복 확인
+    function checkNickname() {
+        const nickname = document.getElementById('nickname').value.trim();
+        const errorDiv = document.getElementById('nicknameError');
+        const successDiv = document.getElementById('nicknameSuccess');
+
+        if (!nickname) {
+            showError(errorDiv, '닉네임을 입력하세요.');
+            hideSuccess(successDiv);
+            return;
+        }
+
+        fetch(`/users/check-nickname?nickname=${nickname}`)
+            .then(response => response.text())
+            .then(isDuplicate => {
+                if (isDuplicate === 'true') {
+                    showError(errorDiv, '이미 사용 중인 닉네임입니다.');
+                    hideSuccess(successDiv);
+                    nicknameChecked = false;
+                } else {
+                    showSuccess(successDiv, '사용 가능한 닉네임입니다.');
+                    hideError(errorDiv);
+                    nicknameChecked = true;
+                }
+            })
+            .catch(() => showError(errorDiv, '중복 확인 중 오류가 발생했습니다.'));
+    }
+
+    document.getElementById('username').addEventListener('input', function() {
+        usernameChecked = false;
+        hideError(document.getElementById('usernameError'));
+        hideSuccess(document.getElementById('usernameSuccess'));
+    });
+
+    document.getElementById('nickname').addEventListener('input', function() {
+        nicknameChecked = false;
+        hideError(document.getElementById('nicknameError'));
+        hideSuccess(document.getElementById('nicknameSuccess'));
+    });
+
+    // 비밀번호 실시간 검증
+    document.getElementById('password').addEventListener('input', function() {
+        const password = this.value;
+        const errorDiv = document.getElementById('passwordError');
+        const regex = /^(?=.*[A-Za-z])(?=.*\d)(?=.*[@$!%*#?&])[A-Za-z\d@$!%*#?&]{8,20}$/;
+
+        if (password && !regex.test(password)) {
+            showError(errorDiv, '영문, 숫자, 특수문자를 포함한 8~20자여야 합니다.');
+        } else {
+            hideError(errorDiv);
+        }
+    });
+
+    // 비밀번호 확인 실시간 검증
+    document.getElementById('passwordConfirm').addEventListener('input', function() {
+        const password = document.getElementById('password').value;
+        const passwordConfirm = this.value;
+        const errorDiv = document.getElementById('passwordConfirmError');
+
+        if (passwordConfirm && password !== passwordConfirm) {
+            showError(errorDiv, '비밀번호가 일치하지 않습니다.');
+        } else {
+            hideError(errorDiv);
+        }
+    });
+
+    function showError(element, message) {
+        element.textContent = message;
+        element.style.display = 'block';
+    }
+
+    function hideError(element) {
+        element.style.display = 'none';
+    }
+
+    function showSuccess(element, message) {
+        element.textContent = message;
+        element.style.display = 'block';
+    }
+
+    function hideSuccess(element) {
+        element.style.display = 'none';
+    }
+</script>
+</body>
+</html>
